@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Note text content."
-        android:id="@+id/listItemNoteText"
+        android:id="@+id/listItemNoteBody"
         android:layout_below="@+id/listItemNoteTitle"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/listItemNoteImg"
