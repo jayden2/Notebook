@@ -6,6 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -44,6 +48,8 @@ public class MainActivityListFragment extends ListFragment {
         //set divider between fragments color and height
         getListView().setDivider(ContextCompat.getDrawable(getActivity(), android.R.color.darker_gray));
         getListView().setDividerHeight(1);
+
+        registerForContextMenu(getListView());
     }
 
     @Override
@@ -51,6 +57,28 @@ public class MainActivityListFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
 
         launchNoteDetailActivity(position);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater menuInflater = getActivity().getMenuInflater();
+        menuInflater.inflate(R.menu.long_press_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        //Returns id of menu item we selected
+        switch (item.getItemId()) {
+            case R.id.edit:
+                //do stuff
+                Log.d("Edit Menu Click", "Edit pressed");
+                return true;
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     private void launchNoteDetailActivity(int position) {
