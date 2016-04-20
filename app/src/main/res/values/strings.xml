@@ -12,7 +12,8 @@
 
     <!-- Main List Long Click Context Menu -->
     <string name="edit_menu">Edit</string>
+    <string name="delete_menu">Delete</string>
 
-    <!-- Fragement Widget Strings -->
+    <!-- Fragment Widget Strings -->
     <string name="save_note_button">Save Note</string>
 </resources>

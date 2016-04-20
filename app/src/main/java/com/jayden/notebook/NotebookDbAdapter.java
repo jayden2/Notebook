@@ -1,5 +1,6 @@
 package com.jayden.notebook;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Jayden on 20-Apr-16.
@@ -27,12 +29,12 @@ public class NotebookDbAdapter {
     private String[] allColumns = { COLUMN_ID, COLUMN_TITLE, COLUMN_MESSAGE,
             COLUMN_CATEGORY, COLUMN_DATE };
 
-    public static final String CREATE_TABLE_NOTE = "create table " + NOTE_TABLE + " { "
+    public static final String CREATE_TABLE_NOTE = "create table " + NOTE_TABLE + " ( "
             + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_TITLE + " text not null, "
             + COLUMN_MESSAGE + " text not null, "
             + COLUMN_CATEGORY + " integer not null, "
-            + COLUMN_DATE + " };";
+            + COLUMN_DATE + ");";
 
     private SQLiteDatabase sqlDB;
     private Context context;
@@ -51,6 +53,38 @@ public class NotebookDbAdapter {
 
     public void close() {
         notebookDbHelper.close();
+    }
+
+    public Note createNote(String title, String message, Note.Category category) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TITLE, title);
+        values.put(COLUMN_MESSAGE, message);
+        values.put(COLUMN_CATEGORY, category.name());
+        values.put(COLUMN_DATE, Calendar.getInstance().getTimeInMillis() + "");
+
+        long insertId = sqlDB.insert(NOTE_TABLE, null, values);
+
+        Cursor cursor = sqlDB.query(NOTE_TABLE,
+                allColumns, COLUMN_ID + " - " + insertId, null, null, null, null);
+
+        cursor.moveToFirst();
+        Note newNote = cursorToNote(cursor);
+        cursor.close();
+        return newNote;
+    }
+
+    public long deleteNote(long idToDelete) {
+        return sqlDB.delete(NOTE_TABLE, COLUMN_ID + " = " + idToDelete, null);
+    }
+
+    public long updateNote(long idToUpdate, String newTitle, String newMessage, Note.Category newCategory) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_TITLE, newTitle);
+        values.put(COLUMN_MESSAGE, newMessage);
+        values.put(COLUMN_CATEGORY, newCategory.name());
+        values.put(COLUMN_DATE, Calendar.getInstance().getTimeInMillis() + "");
+
+        return sqlDB.update(NOTE_TABLE, values, COLUMN_ID + " = " + idToUpdate, null);
     }
 
     public ArrayList<Note> getAllNotes() {

@@ -29,18 +29,10 @@ public class MainActivityListFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        notes = new ArrayList<Note>();
-        notes.add(new Note("Note Title 1", "note body 1", Note.Category.PERSONAL));
-        notes.add(new Note("Note Title 2", "note body 2", Note.Category.FINANCE));
-        notes.add(new Note("Note Title 3", "note body 3", Note.Category.TECHNICAL));
-        notes.add(new Note("Note Title 4", "note body 4", Note.Category.QUOTE));
-        notes.add(new Note("Note Title 5", "note body 5", Note.Category.QUOTE));
-        notes.add(new Note("Note Title 6", "note body 6", Note.Category.PERSONAL));
-        notes.add(new Note("Note Title 7", "note body 7", Note.Category.FINANCE));
-        notes.add(new Note("Note Title 8", "note body 8", Note.Category.PERSONAL));
-        notes.add(new Note("Note Title 9", "note body 9", Note.Category.TECHNICAL));
-        notes.add(new Note("Note Title 10", "note body 10", Note.Category.PERSONAL));
-        notes.add(new Note("Note Title 11", "note body 11", Note.Category.PERSONAL));
+        NotebookDbAdapter dbAdapter = new NotebookDbAdapter(getActivity().getBaseContext());
+        dbAdapter.open();
+        notes = dbAdapter.getAllNotes();
+        dbAdapter.close();
 
         noteAdapter = new NoteAdapter(getActivity(), notes);
 
@@ -74,6 +66,7 @@ public class MainActivityListFragment extends ListFragment {
         //position of pressed note
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         int rowPosition = info.position;
+        Note note = (Note) getListAdapter().getItem(rowPosition);
 
         //Returns id of menu item we selected
         switch (item.getItemId()) {
@@ -81,6 +74,16 @@ public class MainActivityListFragment extends ListFragment {
                 launchNoteDetailActivity(MainActivity.FragmentToLaunch.EDIT, rowPosition);
                 Log.d("Edit Menu Click", "Edit pressed");
                 return true;
+            case R.id.delete:
+                NotebookDbAdapter dbAdapter = new NotebookDbAdapter(getActivity().getBaseContext());
+                dbAdapter.open();
+                dbAdapter.deleteNote(note.getNoteId());
+
+                notes.clear();
+                notes.addAll(dbAdapter.getAllNotes());
+                noteAdapter.notifyDataSetChanged();
+
+                dbAdapter.close();
         }
 
         return super.onContextItemSelected(item);
