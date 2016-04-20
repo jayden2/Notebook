@@ -65,7 +65,7 @@ public class NotebookDbAdapter {
         long insertId = sqlDB.insert(NOTE_TABLE, null, values);
 
         Cursor cursor = sqlDB.query(NOTE_TABLE,
-                allColumns, COLUMN_ID + " - " + insertId, null, null, null, null);
+                allColumns, COLUMN_ID + " = " + insertId, null, null, null, null);
 
         cursor.moveToFirst();
         Note newNote = cursorToNote(cursor);
