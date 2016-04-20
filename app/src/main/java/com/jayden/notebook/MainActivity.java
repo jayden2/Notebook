@@ -1,5 +1,6 @@
 package com.jayden.notebook;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,7 +17,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String NOTE_MESSAGE_EXTRA = "com.jayden.notebook.Message";
     public static final String NOTE_CATEGORY_EXTRA = "com.jayden.notebook.Category";
     public static final String NOTE_FRAGMENT_TO_LOAD_EXTRA = "com.jayden.notebook.Fragment_To_Load";
-    public enum FragmentToLaunch{ VIEW, EDIT }
+
+    public enum FragmentToLaunch{ VIEW, EDIT, CREATE }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,16 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             return true;
+
+        } else if (id == R.id.action_add_note) {
+
+            Intent intent = new Intent(this, NoteDetailActivity.class);
+            intent.putExtra(MainActivity.NOTE_FRAGMENT_TO_LOAD_EXTRA, FragmentToLaunch.CREATE);
+            startActivity(intent);
+            return true;
+
         }
 
         return super.onOptionsItemSelected(item);
