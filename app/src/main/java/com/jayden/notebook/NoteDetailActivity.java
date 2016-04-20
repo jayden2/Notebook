@@ -1,5 +1,6 @@
 package com.jayden.notebook;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -17,12 +18,28 @@ public class NoteDetailActivity extends AppCompatActivity {
 
     private void createAndAddFragment() {
 
+        //grab intent and fragment to launch from main activity list fragment
+        Intent intent = getIntent();
+        MainActivity.FragmentToLaunch fragmentToLaunch =
+                (MainActivity.FragmentToLaunch) intent.getSerializableExtra(MainActivity.NOTE_FRAGMENT_TO_LOAD_EXTRA);
+
+        //getting fragment manager and fragment transaction to add the edit or view fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        NoteViewFragment noteViewFragment = new NoteViewFragment();
-        setTitle(R.string.view_fragment_title);
-        fragmentTransaction.add(R.id.note_container, noteViewFragment, "NOTE_VIEW_FRAGMENT");
+        //fragment edit or fragment view to note detail activity
+        switch(fragmentToLaunch) {
+            case EDIT:
+                NoteEditFragment noteEditFragment = new NoteEditFragment();
+                setTitle(R.string.edit_fragment_title);
+                fragmentTransaction.add(R.id.note_container, noteEditFragment, "NOTE_EDIT_FRAGMENT");
+                break;
+            case VIEW:
+                NoteViewFragment noteViewFragment = new NoteViewFragment();
+                setTitle(R.string.view_fragment_title);
+                fragmentTransaction.add(R.id.note_container, noteViewFragment, "NOTE_VIEW_FRAGMENT");
+                break;
+        }
 
         fragmentTransaction.commit();
     }

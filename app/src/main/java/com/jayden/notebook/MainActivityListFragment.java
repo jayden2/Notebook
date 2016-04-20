@@ -11,6 +11,7 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -56,7 +57,7 @@ public class MainActivityListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
-        launchNoteDetailActivity(position);
+        launchNoteDetailActivity(MainActivity.FragmentToLaunch.VIEW, position);
     }
 
     @Override
@@ -70,10 +71,14 @@ public class MainActivityListFragment extends ListFragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
+        //position of pressed note
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int rowPosition = info.position;
+
         //Returns id of menu item we selected
         switch (item.getItemId()) {
             case R.id.edit:
-                //do stuff
+                launchNoteDetailActivity(MainActivity.FragmentToLaunch.EDIT, rowPosition);
                 Log.d("Edit Menu Click", "Edit pressed");
                 return true;
         }
@@ -81,7 +86,7 @@ public class MainActivityListFragment extends ListFragment {
         return super.onContextItemSelected(item);
     }
 
-    private void launchNoteDetailActivity(int position) {
+    private void launchNoteDetailActivity(MainActivity.FragmentToLaunch ftl, int position) {
 
         //Grab the note information associated with the clicked note item
         Note note = (Note) getListAdapter().getItem(position);
@@ -95,6 +100,14 @@ public class MainActivityListFragment extends ListFragment {
         intent.putExtra(MainActivity.NOTE_CATEGORY_EXTRA, note.getCategory());
         intent.putExtra(MainActivity.NOTE_ID_EXTRA, note.getNoteId());
 
+        switch(ftl) {
+            case VIEW:
+                intent.putExtra(MainActivity.NOTE_FRAGMENT_TO_LOAD_EXTRA, MainActivity.FragmentToLaunch.VIEW);
+                break;
+            case EDIT:
+                intent.putExtra(MainActivity.NOTE_FRAGMENT_TO_LOAD_EXTRA, MainActivity.FragmentToLaunch.EDIT);
+                break;
+        }
         startActivity(intent);
     }
 }

@@ -32,7 +32,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/editNoteTitle"
             android:inputType="text"/>
-        
+
     </ScrollView>
 
     <ScrollView
