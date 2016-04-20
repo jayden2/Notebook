@@ -28,6 +28,8 @@ public class NoteEditFragment extends Fragment {
     private Note.Category savedButtonCategory;
     private AlertDialog categoryDialogObject, confirmDialogObject;
 
+    private static final String MODIFIED_CATEGORY = "Modified Category";
+
     public NoteEditFragment() {
         // Required empty public constructor
     }
@@ -36,6 +38,10 @@ public class NoteEditFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        if (savedInstanceState != null) {
+            savedButtonCategory = (Note.Category) savedInstanceState.get(MODIFIED_CATEGORY);
+        }
 
         //Inflate edit fragment layout
         View fragmentLayout = inflater.inflate(R.layout.fragment_note_edit, container, false);
@@ -51,9 +57,18 @@ public class NoteEditFragment extends Fragment {
         title.setText(intent.getExtras().getString(MainActivity.NOTE_TITLE_EXTRA));
         message.setText(intent.getExtras().getString(MainActivity.NOTE_MESSAGE_EXTRA));
 
-        Note.Category noteCat = (Note.Category) intent.getSerializableExtra(MainActivity.NOTE_CATEGORY_EXTRA);
-        savedButtonCategory = noteCat;
-        noteCatButton.setImageResource(Note.categoryToDrawable(noteCat));
+        //If category was set and the orientation changes, set the button to saved category
+        if (savedButtonCategory != null) {
+
+            noteCatButton.setImageResource(Note.categoryToDrawable(savedButtonCategory));
+
+        } else {
+            //regular setup
+            Note.Category noteCat = (Note.Category) intent.getSerializableExtra(MainActivity.NOTE_CATEGORY_EXTRA);
+            savedButtonCategory = noteCat;
+            noteCatButton.setImageResource(Note.categoryToDrawable(noteCat));
+
+        }
 
         buildCategoryDialog();
         buildConfirmDialog();
@@ -73,6 +88,12 @@ public class NoteEditFragment extends Fragment {
         });
 
         return fragmentLayout;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putSerializable(MODIFIED_CATEGORY, savedButtonCategory);
     }
 
     private void buildCategoryDialog() {
