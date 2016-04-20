@@ -79,8 +79,7 @@ public class MainActivityListFragment extends ListFragment {
                 dbAdapter.open();
                 dbAdapter.deleteNote(note.getNoteId());
 
-                notes.clear();
-                notes.addAll(dbAdapter.getAllNotes());
+                notes.remove(rowPosition);
                 noteAdapter.notifyDataSetChanged();
 
                 dbAdapter.close();
